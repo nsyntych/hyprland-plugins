@@ -122,6 +122,10 @@ void CHyprBar::onMouseButton(SCallbackInfo& info, IPointer::SButtonEvent e) {
         return;
     }
 
+    switch (e.button) {
+        case 273: m_bDownAction = "1resizewindow"; m_bUpAction = "0resizewindow"; // Resize on right click
+        default: m_bDownAction = "1movewindow"; m_bUpAction = "0movewindow";      // Move on any other click
+    }
     handleDownEvent(info, std::nullopt);
 }
 
@@ -201,7 +205,7 @@ void CHyprBar::handleDownEvent(SCallbackInfo& info, std::optional<ITouch::SDownE
         if (m_bDraggingThis) {
             if (m_bTouchEv)
                 g_pKeybindManager->m_dispatchers["settiled"]("activewindow");
-            g_pKeybindManager->m_dispatchers["mouse"]("0movewindow");
+            g_pKeybindManager->m_dispatchers["mouse"](m_bUpAction);
             Debug::log(LOG, "[hyprbars] Dragging ended on {:x}", (uintptr_t)PWINDOW.get());
         }
 
@@ -243,7 +247,7 @@ void CHyprBar::handleUpEvent(SCallbackInfo& info) {
     m_bCancelledDown = false;
 
     if (m_bDraggingThis) {
-        g_pKeybindManager->m_dispatchers["mouse"]("0movewindow");
+        g_pKeybindManager->m_dispatchers["mouse"](m_bUpAction);
         m_bDraggingThis = false;
         if (m_bTouchEv)
             g_pKeybindManager->m_dispatchers["settiled"]("activewindow");
@@ -257,7 +261,7 @@ void CHyprBar::handleUpEvent(SCallbackInfo& info) {
 }
 
 void CHyprBar::handleMovement() {
-    g_pKeybindManager->m_dispatchers["mouse"]("1movewindow");
+    g_pKeybindManager->m_dispatchers["mouse"](m_bDownAction);
     m_bDraggingThis = true;
     Debug::log(LOG, "[hyprbars] Dragging initiated on {:x}", (uintptr_t)m_pWindow.lock().get());
     return;

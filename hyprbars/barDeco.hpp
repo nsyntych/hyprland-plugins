@@ -108,6 +108,9 @@ class CHyprBar : public IHyprWindowDecoration {
     bool                 m_bCancelledDown = false;
     int                  m_touchId        = 0;
 
+    std::string          m_bDownAction = "1movewindow";
+    std::string          m_bUpAction   = "0movewindow";
+
     // store hover state for buttons as a bitfield
     unsigned int m_iButtonHoverState = 0;
 
